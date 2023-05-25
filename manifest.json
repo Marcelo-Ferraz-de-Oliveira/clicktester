@@ -1,23 +1,29 @@
 {
-  "manifest_version": 2,
-  "name": "Captura de Formulário",
-  "version": "1.0",
-  "permissions": ["tabs", "activeTab"],
+  "manifest_version": 3,
+  "name": "ClickTester",
+  "version": "0.0.1",
+  "permissions": ["tabs", "activeTab", "scripting"],
+  "host_permissions": ["https://*/*", "http://*/*"],
   "background": {
-    "scripts": ["background.js"],
-    "persistent": false
+    "service_worker": "background.js"
   },
   "content_scripts": [{
-    "matches": ["*://*/*"],
+    "matches": ["https://*/*", "http://*/*"],
     "js": ["content.js"]
   }],
-  "browser_action": {
-    "default_icon": "icon16.png",
+  "action": {
+    "default_icon": {
+      "16": "icon16.png",
+      "48": "icon48.png",
+      "128": "icon128.png"
+    },
+    "default_title": "Click Tester",
     "default_popup": "popup.html"
   },
-  "icons": {
-    "16": "icon16.png",
-    "48": "icon48.png",
-    "128": "icon128.png"
-  }
+  "web_accessible_resources": [
+    {
+      "resources": [ ],
+      "matches": ["https://*.youtube.com/*"]
+    }
+  ]
 }
