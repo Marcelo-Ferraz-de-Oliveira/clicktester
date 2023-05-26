@@ -3,21 +3,29 @@
 //body = document.getElementBy
 //document.body.insertBefore(p, document.body.firstChild);
 (() => {
-  let interacoes = []
-  function exibirPopup(json) {
-    const popup = document.createElement("div");
-    popup.innerHTML = `
-    <div style="position: fixed; top: 10px; right: 10px; padding: 10px; background-color: white; border: 1px solid black; z-index: 9999;">
-    <pre>${json}</pre>
-    <button id="fechar-popup" style="margin-top: 10px;">Fechar</button>
-    </div>
-    `;
-    document.body.appendChild(popup);
+  var interacoes = [];
+  const sessao = "ClickTesterSessao";
+  (async () => {
+    interacoes = await chrome.storage.local.get([sessao]);
+    interacoes = interacoes[sessao]
+    console.log(interacoes)
+  })();
 
-    const botaoFechar = popup.querySelector("#fechar-popup");
-    botaoFechar.addEventListener("click", function () {
-      document.body.removeChild(popup);
-    });
+
+  const IdBar = "ClickTesterBar";
+  const HTMLBase = "<p>Barra de acompanhamento do ClickTester</p>";
+  var barra = ""
+  const criar_barra = () => {
+    const elemento = document.createElement("div");
+    elemento.id = IdBar;
+    elemento.style = "top: 0; width: 100%; z-index:10000; background-color: beige; color: black; font-family: Arial, sans-serif; font-weight: bold; font-size: 16px;";
+    elemento.innerHTML = HTMLBase;
+    document.body.insertAdjacentElement("afterbegin", elemento);
+    return document.getElementById(IdBar)
+  }
+
+  if (!document.getElementById(IdBar)) {
+    barra = criar_barra();
   }
 
   // Função para registrar as interações em formato JSON
@@ -35,14 +43,16 @@
       elemento: elemento
     };
 
-    const json = JSON.stringify(interacao);
     if (interacoes) {
-      if (JSON.stringify(interacoes.at(-1)) !== JSON.stringify(interacao)) {
-        interacoes = [...interacoes, interacao]
-        console.log(interacoes)
+      if (JSON.stringify(interacoes.at(-1)) === JSON.stringify(interacao)) {
+        return;
       }
     }
-    // exibirPopup(json); // Exibir o JSON no pop-up
+    interacoes.push(interacao);
+    chrome.storage.local.set({sessao: JSON.stringify(interacoes)});
+    // console.log(interacoes)
+    barra.innerHTML = HTMLBase + "\n" + JSON.stringify(interacao)
+
   }
 
   document.addEventListener("click", function (event) {
