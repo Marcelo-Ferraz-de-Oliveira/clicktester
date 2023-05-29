@@ -4,10 +4,18 @@
 //document.body.insertBefore(p, document.body.firstChild);
 (() => {
   var interacoes = [];
-  const sessao = "ClickTesterSessao";
+  // var sessao = "";
+  // chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+  //   var activeTab = tabs[0];
+  //   sessao = activeTab.url
+  //   console.log(sessao)
+  // });
+  var sessao = "ClickTesterSessao";
   (async () => {
-    interacoes = await chrome.storage.local.get([sessao]);
-    interacoes = interacoes[sessao]
+    resultado = await chrome.storage.local.get([sessao]);
+    if (resultado[sessao]) {
+      interacoes = JSON.parse(resultado[sessao])
+    }
     console.log(interacoes)
   })();
 
@@ -18,7 +26,7 @@
   const criar_barra = () => {
     const elemento = document.createElement("div");
     elemento.id = IdBar;
-    elemento.style = "top: 0; width: 100%; z-index:10000; background-color: beige; color: black; font-family: Arial, sans-serif; font-weight: bold; font-size: 16px;";
+    elemento.style = "top: 0; width: 100%; z-index:1000000; background-color: beige; color: black; font-family: Arial, sans-serif; font-weight: bold; font-size: 16px;";
     elemento.innerHTML = HTMLBase;
     document.body.insertAdjacentElement("afterbegin", elemento);
     return document.getElementById(IdBar)
@@ -48,10 +56,17 @@
         return;
       }
     }
-    interacoes.push(interacao);
-    chrome.storage.local.set({sessao: JSON.stringify(interacoes)});
-    // console.log(interacoes)
-    barra.innerHTML = HTMLBase + "\n" + JSON.stringify(interacao)
+    interacoes = [...interacoes, interacao]
+    obj = {};
+    obj[sessao] = JSON.stringify(interacoes);
+    chrome.storage.local.set(obj).then(() => {
+      console.log("Storage setado para: " + JSON.stringify(interacoes))
+    })
+    console.log(interacoes)
+    chrome.storage.local.get(sessao).then((result) => {
+      console.log("Valor atual do storage: " + JSON.stringify(result))
+    })
+    // barra.innerHTML = HTMLBase + "\n" + JSON.stringify(interacao)
 
   }
 
