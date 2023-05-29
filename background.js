@@ -1,5 +1,5 @@
 // Função para enviar a URL da aba ativa para o contentScript.js
-function enviarURLAtiva() {
+const enviarURLAtiva = () => {
   chrome.tabs.query({ active: true, currentWindow: true }, function(tabs) {
     const url = tabs[0].url;
     chrome.tabs.sendMessage(tabs[0].id, { url: url });
