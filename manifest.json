@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "ClickTester",
   "version": "0.0.1",
-  "permissions": ["storage", "tabs", "activeTab", "scripting"],
+  "permissions": ["storage", "unlimitedStorage", "tabs", "activeTab", "scripting"],
   "host_permissions": ["https://*/*", "http://*/*"],
   "background": {
     "service_worker": "background.js"
